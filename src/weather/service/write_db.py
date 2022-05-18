@@ -5,6 +5,7 @@ from src.weather.models import City
 
 class WriteDB:
     def _check_error(self, data: dict) -> None:
+        """ Проверка на ошибку данных api """
         if 'Error' in data:
             raise ValidationError(detail=data['Error'], code=400)
 

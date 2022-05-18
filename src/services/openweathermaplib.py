@@ -16,6 +16,7 @@ class OpenWeatherMapClient:
 
     def get_weather(self, city_name: str,
                     units: str = 'metric', lang: str = 'ru') -> dict:
+        """ Получения данных о погоде в городе """
         data = {
             'q': city_name,
             'appid': self.__api_keys,
