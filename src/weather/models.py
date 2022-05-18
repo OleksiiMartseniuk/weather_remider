@@ -64,6 +64,7 @@ class SubscriptionCity(models.Model):
 
     class Meta:
         ordering = ['-id']
+        unique_together = ['owner', 'city']
 
     def __str__(self):
         return f'{self.owner.username} subscription {self.city.name}'
