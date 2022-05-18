@@ -22,7 +22,7 @@ class City(models.Model):
     visibility = models.IntegerField('Видимость, метр. Максимальное значение видимости 10км')
     wind_speed = models.FloatField('Скорость ветра метр/сек')
     wind_deg = models.FloatField('Направление ветра, градусы')
-    wind_gust = models.FloatField('Порыв ветра. метр/сек')
+    wind_gust = models.FloatField('Порыв ветра. метр/сек', blank=True, null=True)
     clouds_all = models.IntegerField('Облачность, %')
     dt = models.IntegerField('Время расчета данных, unix, UTC')
     sys_country = models.CharField('Код страны', max_length=10)
