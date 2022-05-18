@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 
 class City(models.Model):
@@ -34,3 +35,35 @@ class City(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class SubscriptionCity(models.Model):
+    """ Подписка на город """
+    PERIODICITY_SEND_EMAIL_CHOICES = [
+        ('1', '1 hours'),
+        ('3', '3 hours'),
+        ('6', '6 hours'),
+        ('12', '12 hours'),
+    ]
+
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='subscription_city'
+    )
+    periodicity_send_email = models.CharField(
+        'Периодичность отправить письмо',
+        max_length=2,
+        choices=PERIODICITY_SEND_EMAIL_CHOICES,
+        default='6'
+    )
+    city = models.ForeignKey(
+        City,
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        ordering = ['-id']
+
+    def __str__(self):
+        return f'{self.owner.username} subscription {self.city.name}'
