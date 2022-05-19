@@ -5,7 +5,7 @@ from django.conf import settings
 class City(models.Model):
     """ Город """
     id_city = models.IntegerField('Идентификатор города')
-    name = models.CharField('Название города', max_length=20)
+    name = models.CharField('Название города', max_length=20, unique=True)
     timezone = models.IntegerField('Сдвиг в секундах от UTC')
     coord_lon = models.FloatField('Географическое положение города, долгота')
     coord_lat = models.FloatField('Географическое положение города, широта')
