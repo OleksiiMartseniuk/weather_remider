@@ -28,7 +28,8 @@ class SubscriptionCitySerializer(serializers.ModelSerializer):
         task_name = f'{instance.owner.username}_{instance.city.name}'
         instance.periodic_task = service_task.create(time=int(instance.periodicity_send_email),
                                                      name=task_name,
-                                                     city_id=instance.city.id)
+                                                     city_id=instance.city.id,
+                                                     owner_email=instance.owner.email)
         instance.save()
         return instance
 

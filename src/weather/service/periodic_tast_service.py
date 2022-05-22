@@ -6,7 +6,7 @@ class ServiceTasks:
         """ Интервальное расписание """
         return IntervalSchedule.objects.filter(every=time, period=IntervalSchedule.HOURS)[0]
 
-    def create(self, time: int, name: str, city_id: int) -> PeriodicTask:
+    def create(self, time: int, name: str, city_id: int, owner_email: str) -> PeriodicTask:
         """ Создания Периодической задачи"""
         schedule = self.get_schedule(time)
         task = PeriodicTask.objects.create(
