@@ -32,5 +32,11 @@ class SubscriptionCityView(viewsets.ModelViewSet):
     serializer_class = serializers.SubscriptionCitySerializer
     permission_classes = [IsAuthenticated]
 
+    def get_serializer_class(self):
+        if self.action == 'update':
+            return serializers.SubscriptionCitySerializerUpdate
+        else:
+            return self.serializer_class
+
     def get_queryset(self):
         return models.SubscriptionCity.objects.filter(owner=self.request.user)
