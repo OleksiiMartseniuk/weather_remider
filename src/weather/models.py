@@ -61,7 +61,6 @@ class SubscriptionCity(models.Model):
     periodic_task = models.ForeignKey(
         PeriodicTask,
         on_delete=models.CASCADE,
-        # TODO удалить
         null=True,
         blank=True
     )
