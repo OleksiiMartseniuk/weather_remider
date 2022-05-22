@@ -8,12 +8,13 @@ class WriteDB:
         """ Проверка на ошибку данных api """
         if 'Error' in data:
             raise ValidationError(detail=data['Error'], code=400)
-        elif City.objects.filter(id_city=data['id']).exists():
-            raise ValidationError(detail='Object already exists', code=400)
 
     def create_city(self, data: dict) -> None:
         """ Запись Города"""
         self._check_error(data)
+        if City.objects.filter(id_city=data['id']).exists():
+            raise ValidationError(detail='Object already exists', code=400)
+
         try:
             City.objects.create(
                 id_city=data['id'],
