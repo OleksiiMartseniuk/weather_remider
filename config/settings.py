@@ -171,3 +171,8 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
+
+# Celery Configuration Options
+CELERY_TIMEZONE = "Europe/Kiev"
+CELERY_BROKER_URL = os.getenv('REDIS_CLOUD_URL')
+CELERY_RESULT_BACKEND = os.getenv('REDIS_CLOUD_URL')
