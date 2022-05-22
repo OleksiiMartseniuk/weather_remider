@@ -178,3 +178,5 @@ CELERY_TIMEZONE = "Europe/Kiev"
 CELERY_BROKER_URL = os.getenv('REDIS_CLOUD_URL')
 CELERY_RESULT_BACKEND = os.getenv('REDIS_CLOUD_URL')
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+TIME_LIST = [1, 3, 6, 12]
