@@ -20,4 +20,5 @@ class SubscriptionCitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SubscriptionCity
-        fields = '__all__'
+        exclude = ['periodic_task']
+        # fields = '__all__'

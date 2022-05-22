@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django_celery_beat.models import PeriodicTask
 
 
 class City(models.Model):
@@ -56,6 +57,13 @@ class SubscriptionCity(models.Model):
         max_length=2,
         choices=PERIODICITY_SEND_EMAIL_CHOICES,
         default='6'
+    )
+    periodic_task = models.ForeignKey(
+        PeriodicTask,
+        on_delete=models.CASCADE,
+        # TODO удалить
+        null=True,
+        blank=True
     )
     city = models.ForeignKey(
         City,
