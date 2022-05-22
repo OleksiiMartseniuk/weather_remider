@@ -34,6 +34,7 @@ class SubscriptionCitySerializer(serializers.ModelSerializer):
 
 
 class SubscriptionCitySerializerUpdate(serializers.ModelSerializer):
+    """ Обновления подписки """
     class Meta:
         model = SubscriptionCity
         fields = ['periodicity_send_email']
