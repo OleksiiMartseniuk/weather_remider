@@ -40,3 +40,7 @@ class SubscriptionCityView(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return models.SubscriptionCity.objects.filter(owner=self.request.user)
+
+    def perform_destroy(self, instance):
+        instance.periodic_task.delete()
+        instance.delete()
