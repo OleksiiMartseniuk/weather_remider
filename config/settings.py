@@ -180,3 +180,12 @@ CELERY_RESULT_BACKEND = os.getenv('REDIS_CLOUD_URL')
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
 TIME_LIST = [1, 3, 6, 12]
+
+# smtp
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS')
+# разрешить доступ на странице
+# https://myaccount.google.com/lesssecureapps
