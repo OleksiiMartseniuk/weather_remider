@@ -1,3 +1,4 @@
+import json
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
 
 
@@ -12,7 +13,8 @@ class ServiceTasks:
         task = PeriodicTask.objects.create(
             interval=schedule,
             name=name,
-            task='src.weather.tasks.sent_weather_email'
+            task='src.weather.tasks.sent_weather_email',
+            args=json.dump([city_id, owner_email])
         )
         return task
 
