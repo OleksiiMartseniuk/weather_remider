@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather</title>
+</head>
+<body>
+    <div>
+        <div >
+            <h2 >{{city.name}}</h2>
+            <div>
+                <span>Долгота: {{city.coord_lon}}</span>
+                <br>
+                <span>Широта: {{city.coord_lat}}</span>
+            </div>
+        </div>
+        <div >
+            <div >
+                <img src="http://openweathermap.org/img/wn/{{city.weather_icon}}@2x.png" alt="">
+            </div>
+            <ul >
+                <li>Идентификатор погодных условий: {{city.weather_id}}</li>
+                <li>Группа погодных параметров: {{city.weather_main}}</li>
+                <li>Погодные условия в группе: {{city.weather_description}}</li>
+                <li>Температура: {{city.main_temp}}°C</li>
+                <li>Человеческое восприятие температуры: {{city.main_feels_like}}°C</li>
+                <li>Минимальная температура на данный момент: {{city.main_temp_min}}°C</li>
+                <li>Максимальная температура на данный момент: {{city.main_temp_max}}°C</li>
+                <li>Атмосферное давление: {{city.main_pressure}}гПа</li>
+                <li>Влажность: {{city.main_humidity}}%</li>
+                <li>Видимость: {{city.visibility}}метр</li>
+                <li>Скорость ветра: {{city.wind_speed}} метр/сек</li>
+                <li>Направление ветра: {{city.wind_deg}} градусы</li>
+                {% if city.wind_gust %}<li>Порыв ветра: {{city.wind_gust}} метр/сек</li>{% endif %}
+                <li>Облачность: {{city.clouds_all}}%</li>
+                <li>Время расчета данных: {{city.dt}}</li>
+                <li>Код страны: {{city.sys_country}}</li>
+                <li>Время восхода солнца: {{city.sys_sunrise}}</li>
+                <li>Время заката: {{city.sys_sunset}}</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
