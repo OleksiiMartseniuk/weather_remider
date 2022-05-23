@@ -14,7 +14,7 @@ class ServiceTasks:
             interval=schedule,
             name=name,
             task='src.weather.tasks.sent_weather_email',
-            args=json.dump([city_id, owner_email])
+            args=json.dumps([city_id, owner_email])
         )
         return task
 
