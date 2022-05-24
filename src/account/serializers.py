@@ -22,3 +22,13 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
+
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(
+        validators=[UniqueValidator(queryset=get_user_model().objects.all())]
+    )
+
+    class Meta:
+        model = get_user_model()
+        fields = ['username', 'email']
