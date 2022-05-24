@@ -9,7 +9,7 @@ class OpenWeatherMapClient:
         self.url = url
 
     def _get(self, req_dict) -> dict:
-        response = requests.post(url=self.url, params=req_dict)
+        response = requests.get(url=self.url, params=req_dict)
         if response.status_code == 200:
             return response.json()
         return {'Error': response.json()['message']}
