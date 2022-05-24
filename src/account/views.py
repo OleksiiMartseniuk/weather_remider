@@ -12,5 +12,16 @@ class UserView(viewsets.ModelViewSet):
             self.permission_classes = [AllowAny]
         return super().get_permissions()
 
+    def get_serializer_class(self):
+        if self.action == 'update':
+            return serializers.UserUpdateSerializer
+        else:
+            return self.serializer_class
+
     def get_object(self):
         return self.request.user
+
+    def perform_destroy(self, instance):
+        for subscription_city in instance.subscription_city.all():
+            subscription_city.periodic_task.delete()
+        instance.delete()
