@@ -54,3 +54,6 @@ params_london = {
 }
 
 error_message = {'message': 'Text message'}
+error_data_message = {'Error': 'Text message'}
+error_exists = 'Object already exists'
+error_fake = 'Invalid data api OpenWeatherMapClient'
