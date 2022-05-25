@@ -3,7 +3,7 @@ import responses
 from responses import matchers
 from src.base.openweathermaplib import OpenWeatherMapClient
 
-from src.tests.test_api import conf_json
+from src.tests.test_base import conf_json
 
 
 class TestOpenWeatherMapClient(unittest.TestCase):

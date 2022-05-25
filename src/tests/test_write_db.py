@@ -3,7 +3,7 @@ from rest_framework.exceptions import ValidationError
 
 from src.weather.service.write_db import WriteDB
 from src.weather.models import City
-from src.tests.test_api import conf_json
+from src.tests.test_base import conf_json
 
 
 class TestWriteDB(APITestCase):
