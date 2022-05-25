@@ -12,7 +12,7 @@ class WriteDB:
     def create_city(self, data: dict) -> None:
         """ Запись Города"""
         self._check_error(data)
-        if City.objects.filter(id_city=data['id']).exists():
+        if City.objects.filter(id_city=data.get('id')).exists():
             raise ValidationError(detail='Object already exists', code=400)
 
         try:
