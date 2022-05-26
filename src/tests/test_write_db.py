@@ -15,7 +15,7 @@ class TestWriteDB(APITestCase):
         self.writer.create_city(conf_json.london_data)
         self.assertEqual(1, City.objects.count())
 
-        city = City.objects.get(id=1)
+        city = City.objects.get(name='London')
 
         self.assertEqual(city.id_city, conf_json.london_data['id'])
         self.assertEqual(city.name, conf_json.london_data['name'])
