@@ -1,5 +1,6 @@
 # Weather Remider
-<hr>
+
+---
 
 * DRF
 * Postgres
@@ -25,7 +26,8 @@
 
 
 # Instructions
-<hr>
+
+---
 
 Clone repository
 <br>
