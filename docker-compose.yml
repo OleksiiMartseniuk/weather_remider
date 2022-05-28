@@ -1,16 +1,59 @@
 version: "3.9"
 
 services:
+  web:
+    build: .
+    container_name: weather_web
+    restart: always
+    command: bash entrypoint.sh
+    volumes:
+      - ./static:/app/static
+    ports:
+      - "8000:8000"
+    env_file: .env
+    depends_on:
+      - database
+
   database:
     image: postgres:14
+    container_name: weather_database
     ports:
-      - 5432:5432
+      - "5432:5432"
     env_file: .env
+
   redis:
     image: redis
+    container_name: weather_redis
     ports:
       - "6379:6379"
     volumes:
       - /path/to/redis-persistence:/bitnami/redis/data
     depends_on:
       - database
+
+  worker:
+    build: .
+    container_name: weather_worker
+    command: celery -A config worker -l info
+    env_file: .env
+    depends_on:
+      - redis
+
+  beat:
+    build: .
+    container_name: weather_beat
+    command: celery -A config beat -l info
+    env_file: .env
+    depends_on:
+      - worker
+
+  nginx:
+    build: ./nginx
+    container_name: weather_nginx
+    restart: on-failure
+    ports:
+      - "80:80"
+    volumes:
+      - ./static:/static
+    depends_on:
+      - web
