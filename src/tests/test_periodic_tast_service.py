@@ -1,6 +1,5 @@
 from rest_framework.test import APITestCase
 
-from src.base.celery_create_time import create_interval_schedule
 from src.weather.service.periodic_tast_service import ServiceTasks
 
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
@@ -8,6 +7,15 @@ from django.conf import settings
 
 import random
 import json
+
+
+def create_interval_schedule():
+    """ Создания Интервального расписания"""
+    for time in settings.TIME_LIST:
+        IntervalSchedule.objects.get_or_create(
+            every=time,
+            period=IntervalSchedule.HOURS,
+        )
 
 
 class TestServiceTasks(APITestCase):
