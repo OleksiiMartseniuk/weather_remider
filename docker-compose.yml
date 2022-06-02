@@ -4,7 +4,6 @@ services:
   web:
     build: .
     container_name: weather_web
-    restart: always
     command: bash entrypoint.sh
     volumes:
       - ./static:/app/static
