@@ -26,10 +26,12 @@ class SubscriptionCitySerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         instance = super().create(validated_data)
         task_name = f'{instance.owner.username}_{instance.city.name}'
-        instance.periodic_task = service_task.create(time=int(instance.periodicity_send_email),
-                                                     name=task_name,
-                                                     city_id=instance.city.id,
-                                                     owner_email=instance.owner.email)
+        instance.periodic_task = service_task.create(
+            time=int(instance.periodicity_send_email),
+            name=task_name,
+            city_id=instance.city.id,
+            owner_email=instance.owner.email
+        )
         instance.save()
         return instance
 
@@ -42,6 +44,8 @@ class SubscriptionCitySerializerUpdate(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         obj = super().update(instance, validated_data)
-        service_task.update(time=int(obj.periodicity_send_email),
-                            task=obj.periodic_task)
+        service_task.update(
+            time=int(obj.periodicity_send_email),
+            task=obj.periodic_task
+        )
         return obj

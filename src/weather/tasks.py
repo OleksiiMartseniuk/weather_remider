@@ -51,8 +51,10 @@ def sent_weather_email(city_id: int, owner_email: str):
     """ Отправка email пользователю """
     city = City.objects.get(id=city_id)
     message = render_to_string('weather/weather_email.html', {'city': city})
-    send_mail(subject='Weather',
-              html_message=message,
-              message=f'Weather in {city.name}',
-              from_email=settings.EMAIL_HOST_USER,
-              recipient_list=[owner_email])
+    send_mail(
+        subject='Weather',
+        html_message=message,
+        message=f'Weather in {city.name}',
+        from_email=settings.EMAIL_HOST_USER,
+        recipient_list=[owner_email]
+    )

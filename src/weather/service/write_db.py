@@ -44,4 +44,6 @@ class WriteDB:
                 sys_sunset=data['sys']['sunset'],
             )
         except Exception:
-            raise ValidationError(detail='Invalid data api OpenWeatherMapClient')
+            raise ValidationError(
+                detail='Invalid data api OpenWeatherMapClient'
+            )

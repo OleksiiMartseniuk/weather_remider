@@ -3,8 +3,11 @@ from django.conf import settings
 
 
 class OpenWeatherMapClient:
-    def __init__(self, api_keys: str = settings.SECRET_KEY_OPEN_WEATHER_MAP,
-                 url: str = 'https://api.openweathermap.org/data/2.5/weather') -> None:
+    def __init__(
+            self,
+            api_keys: str = settings.SECRET_KEY_OPEN_WEATHER_MAP,
+            url: str = 'https://api.openweathermap.org/data/2.5/weather'
+    ) -> None:
         self.__api_keys = api_keys
         self.url = url
 
