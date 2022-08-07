@@ -37,9 +37,6 @@ class UserDestroyView(UserMixin, generics.DestroyAPIView):
     """
 
     def perform_destroy(self, instance):
-        """
-        Удаление пользователя
-        """
         # TODO пересмотреть удаления подписанных городов
         # удаления всех городов с подписок
         for subscription_city in instance.subscription_city.all():
