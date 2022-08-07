@@ -3,9 +3,9 @@ from src.weather.models import City, SubscriptionCity
 from src.weather.service.periodic_tast_service import service_task
 
 
-class CityCreateSerializer(serializers.Serializer):
-    """ Названия города """
-    name = serializers.CharField(max_length=20)
+# class CityCreateSerializer(serializers.Serializer):
+#     """ Названия города """
+#     name = serializers.CharField(max_length=20)
 
 
 class CitySearchSerializer(serializers.Serializer):
@@ -21,8 +21,8 @@ class CitySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class SubscriptionCitySerializer(serializers.ModelSerializer):
-    """ Подписка """
+class CreateSubscriptionSerializer(serializers.ModelSerializer):
+    """ Создания подписка """
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
@@ -40,6 +40,15 @@ class SubscriptionCitySerializer(serializers.ModelSerializer):
         )
         instance.save()
         return instance
+
+
+class ListSubscriptionSerializer(serializers.ModelSerializer):
+    """Список подписок"""
+    city = serializers.SlugRelatedField(slug_field='name', read_only=True)
+
+    class Meta:
+        model = SubscriptionCity
+        exclude = ['periodic_task', 'owner']
 
 
 class SubscriptionCitySerializerUpdate(serializers.ModelSerializer):
