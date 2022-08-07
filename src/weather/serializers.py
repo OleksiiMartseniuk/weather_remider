@@ -51,7 +51,7 @@ class ListSubscriptionSerializer(serializers.ModelSerializer):
         exclude = ['periodic_task', 'owner']
 
 
-class SubscriptionCitySerializerUpdate(serializers.ModelSerializer):
+class UpdateSubscriptionSerializer(serializers.ModelSerializer):
     """ Обновления подписки """
     class Meta:
         model = SubscriptionCity
