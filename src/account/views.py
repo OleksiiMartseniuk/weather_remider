@@ -1,27 +1,47 @@
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from src.account import serializers
+from rest_framework import generics
+from rest_framework.permissions import AllowAny
+
+from .serializers import UserSerializer, UserUpdateSerializer
+from .utils import UserMixin
 
 
-class UserView(viewsets.ModelViewSet):
-    serializer_class = serializers.UserSerializer
-    permission_classes = [IsAuthenticated]
+class UserCreateView(generics.CreateAPIView):
+    """
+    Создания пользователя
+    ---
+    """
+    serializer_class = UserSerializer
+    permission_classes = [AllowAny]
 
-    def get_permissions(self):
-        if self.action == 'create':
-            self.permission_classes = [AllowAny]
-        return super().get_permissions()
 
-    def get_serializer_class(self):
-        if self.action == 'update':
-            return serializers.UserUpdateSerializer
-        else:
-            return self.serializer_class
+class UserUpdateView(UserMixin, generics.UpdateAPIView):
+    """
+    Обновления данных пользователя
+    ---
+    """
+    serializer_class = UserUpdateSerializer
 
-    def get_object(self):
-        return self.request.user
+
+class UserRetrieveView(UserMixin, generics.RetrieveAPIView):
+    """
+    Получения дынных пользователя
+    ---
+    """
+    serializer_class = UserSerializer
+
+
+class UserDestroyView(UserMixin, generics.DestroyAPIView):
+    """
+    Удаления пользователя
+    ---
+    """
 
     def perform_destroy(self, instance):
+        """
+        Удаление пользователя
+        """
+        # TODO пересмотреть удаления подписанных городов
+        # удаления всех городов с подписок
         for subscription_city in instance.subscription_city.all():
             subscription_city.periodic_task.delete()
         instance.delete()
