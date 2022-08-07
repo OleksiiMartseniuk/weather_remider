@@ -9,16 +9,17 @@ class WriteDB:
         if 'Error' in data:
             raise ValidationError(detail=data['Error'], code=400)
 
-    def create_city(self, data: dict) -> None:
+    def create_city(self, data: dict) -> int:
         """ Запись Города"""
         self._check_error(data)
         if City.objects.filter(id_city=data.get('id')).exists():
-            raise ValidationError(detail='Object already exists', code=400)
+            city = City.objects.get(id_city=data.get('id'))
+            return city.id
 
         try:
-            City.objects.create(
+            city = City.objects.create(
                 id_city=data['id'],
-                name=data['name'],
+                name=data['name'].lower(),
                 timezone=data['timezone'],
                 coord_lon=data['coord']['lon'],
                 coord_lat=data['coord']['lat'],
@@ -43,6 +44,7 @@ class WriteDB:
                 sys_sunrise=data['sys']['sunrise'],
                 sys_sunset=data['sys']['sunset'],
             )
+            return city.id
         except Exception:
             raise ValidationError(
                 detail='Invalid data api OpenWeatherMapClient'
