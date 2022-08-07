@@ -8,6 +8,12 @@ class CityCreateSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=20)
 
 
+class CitySearchSerializer(serializers.Serializer):
+    """ Названия города """
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(max_length=20)
+
+
 class CitySerializer(serializers.ModelSerializer):
     """ Город """
     class Meta:
