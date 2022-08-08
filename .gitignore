@@ -1,6 +1,7 @@
 .idea
 venv
 .env
+docker_dev
 db.sqlite3
 celerybeat-schedule
 static
