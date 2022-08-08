@@ -25,7 +25,10 @@ class TestServiceTasks(APITestCase):
 
     def test_get_schedule(self):
         for time in settings.TIME_LIST:
-            self.assertTrue(IntervalSchedule, self.service_task.get_schedule(time))
+            self.assertTrue(
+                IntervalSchedule,
+                self.service_task.get_schedule(time)
+            )
 
     def test_create(self):
         self.assertEqual(0, PeriodicTask.objects.count())

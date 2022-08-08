@@ -1,11 +1,11 @@
 import json
 
-import responses
 from django_celery_beat.models import IntervalSchedule, PeriodicTask
-from responses import matchers
 from rest_framework.test import APITestCase
+from unittest import mock
 
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 
 from src.tests.test_base import conf_json
 from src.weather.models import City, SubscriptionCity
@@ -14,9 +14,21 @@ User = get_user_model()
 
 
 class TestWeather(APITestCase):
+    def create_user(self):
+        return User.objects.create_user(
+            username='test',
+            password='password',
+            email='test@test.com'
+        )
+
     def authenticate(self, username, password) -> None:
-        response = self.client.post('/api/token/', data={'username': username, 'password': password})
-        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + response.data['access'])
+        response = self.client.post(
+            '/api/token/',
+            data={'username': username, 'password': password}
+        )
+        self.client.credentials(
+            HTTP_AUTHORIZATION='Bearer ' + response.data['access']
+        )
 
     def create_city(self) -> City:
         return City.objects.create(
@@ -49,7 +61,11 @@ class TestWeather(APITestCase):
 
     def test_city_get(self):
         city = self.create_city()
-        response = self.client.get('/api/weather/city/London/')
+        self.create_user()
+        self.authenticate('test', 'password')
+        url = reverse('city-ditail', args=[city.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(city.id_city, response.data['id_city'])
         self.assertEqual(city.name, response.data['name'])
         self.assertEqual(city.timezone, response.data['timezone'])
@@ -57,7 +73,10 @@ class TestWeather(APITestCase):
         self.assertEqual(city.coord_lat, response.data['coord_lat'])
         self.assertEqual(city.weather_id, response.data['weather_id'])
         self.assertEqual(city.weather_main, response.data['weather_main'])
-        self.assertEqual(city.weather_description, response.data['weather_description'])
+        self.assertEqual(
+            city.weather_description,
+            response.data['weather_description']
+        )
         self.assertEqual(city.weather_icon, response.data['weather_icon'])
         self.assertEqual(city.base, response.data['base'])
         self.assertEqual(city.main_temp, response.data['main_temp'])
@@ -75,40 +94,22 @@ class TestWeather(APITestCase):
         self.assertEqual(city.sys_country, response.data['sys_country'])
         self.assertEqual(city.sys_sunrise, response.data['sys_sunrise'])
         self.assertEqual(city.sys_sunset, response.data['sys_sunset'])
+        self.client.credentials()
 
-    def test_city_list(self):
-        self.create_city()
-        response = self.client.get('/api/weather/city/')
-        self.assertEqual(1, len(response.data))
-
-    @responses.activate
-    def test_city_create(self):
-        responses.add(
-            responses.GET,
-            'https://api.openweathermap.org/data/2.5/weather',
-            match=[matchers.query_param_matcher(conf_json.params_london)],
-            status=200,
-            json=conf_json.london_data
-        )
-        User.objects.create_user(
-            username='test',
-            password='password',
-            email='test@test.com'
-        )
+    @mock.patch('src.weather.views.weather_s.search_city')
+    def test_city_create(self, mock_search_city):
+        mock_search_city.return_value = 1
+        self.create_user()
         self.authenticate('test', 'password')
         self.assertEqual(0, City.objects.count())
-        response = self.client.post('/api/weather/city/', data={'name': 'London'})
+        url = reverse('city-search')
+        response = self.client.post(url, data={'name': 'London'})
         self.assertEqual(201, response.status_code)
-        self.assertEqual({'name': 'London'}, response.data)
-        self.assertEqual(1, City.objects.count())
+        self.assertEqual(response.json(), {'name': 'London', 'id': 1})
         self.client.credentials()
 
     def test_subscription_retrieve(self):
-        user = User.objects.create_user(
-            username='test',
-            password='password',
-            email='test@test.com'
-        )
+        user = self.create_user()
         schedule = IntervalSchedule.objects.create(
             every=1,
             period=IntervalSchedule.HOURS,
@@ -127,18 +128,16 @@ class TestWeather(APITestCase):
             city=city
         )
         self.authenticate('test', 'password')
-        response = self.client.get(f'/api/weather/subscription/{sub_city.id}/')
+
+        url = reverse('subscription-retrieve', args=[sub_city.id])
+        response = self.client.get(url)
         self.assertEqual('1', response.data['periodicity_send_email'])
-        self.assertEqual(city.id, response.data['city'])
+        self.assertEqual(city.name, response.data['city'])
         self.assertEqual(200, response.status_code)
         self.client.credentials()
 
     def test_subscription_update(self):
-        user = User.objects.create_user(
-            username='test',
-            password='password',
-            email='test@test.com'
-        )
+        user = self.create_user()
         schedule = IntervalSchedule.objects.create(
             every=1,
             period=IntervalSchedule.HOURS,
@@ -160,20 +159,20 @@ class TestWeather(APITestCase):
             periodic_task=task,
             city=city
         )
-
         self.authenticate('test', 'password')
+
+        self.assertEqual(sub_city.periodicity_send_email, '1')
+        url = reverse('subscription-update', args=[sub_city.id])
         data = {'periodicity_send_email': '3'}
-        response = self.client.put(f'/api/weather/subscription/{sub_city.id}/', data=data)
+        response = self.client.put(url, data=data)
         self.assertEqual(200, response.status_code)
         self.assertEqual('3', response.data['periodicity_send_email'])
+        sub_city = SubscriptionCity.objects.get(id=sub_city.id)
+        self.assertEqual(sub_city.periodicity_send_email, '3')
         self.client.credentials()
 
     def test_subscription_destroy(self):
-        user = User.objects.create_user(
-            username='test',
-            password='password',
-            email='test@test.com'
-        )
+        user = self.create_user()
         schedule = IntervalSchedule.objects.create(
             every=1,
             period=IntervalSchedule.HOURS,
@@ -191,21 +190,19 @@ class TestWeather(APITestCase):
             periodic_task=task,
             city=city
         )
+        self.authenticate('test', 'password')
+
         self.assertEqual(1, PeriodicTask.objects.count())
         self.assertEqual(1, SubscriptionCity.objects.count())
-        self.authenticate('test', 'password')
-        response = self.client.delete(f'/api/weather/subscription/{sub_city.id}/')
+        url = reverse('subscription-destroy', args=[sub_city.id])
+        response = self.client.delete(url)
         self.assertEqual(204, response.status_code)
         self.assertEqual(0, PeriodicTask.objects.count())
         self.assertEqual(0, SubscriptionCity.objects.count())
         self.client.credentials()
 
     def test_subscription_list(self):
-        user = User.objects.create_user(
-            username='test',
-            password='password',
-            email='test@test.com'
-        )
+        user = self.create_user()
         schedule = IntervalSchedule.objects.create(
             every=1,
             period=IntervalSchedule.HOURS,
@@ -215,7 +212,7 @@ class TestWeather(APITestCase):
             interval=schedule,
             name='test',
             task='src.weather.tasks.sent_weather_email',
-            args=json.dumps([1, user.email])
+            args=json.dumps([user.id, user.email])
         )
         SubscriptionCity.objects.create(
             owner=user,
@@ -225,16 +222,14 @@ class TestWeather(APITestCase):
         )
 
         self.authenticate('test', 'password')
-        response = self.client.get('/api/weather/subscription/')
+        url = reverse('subscription-list')
+        response = self.client.get(url)
         self.assertEqual(1, len(response.data))
         self.client.credentials()
 
     def test_subscription_create(self):
-        User.objects.create_user(
-            username='test',
-            password='password',
-            email='test@test.com'
-        )
+        self.create_user()
+        self.authenticate('test', 'password')
         IntervalSchedule.objects.create(
             every=1,
             period=IntervalSchedule.HOURS,
@@ -243,9 +238,11 @@ class TestWeather(APITestCase):
 
         self.assertEqual(0, PeriodicTask.objects.count())
         self.assertEqual(0, SubscriptionCity.objects.count())
-        self.authenticate('test', 'password')
+
+        url = reverse('subscription-create')
         data = {'periodicity_send_email': '1', 'city': city.id}
-        response = self.client.post('/api/weather/subscription/', data=data)
+        response = self.client.post(url, data=data)
+
         self.assertEqual(201, response.status_code)
         self.assertEqual('1', response.data['periodicity_send_email'])
         self.assertEqual(city.id, response.data['city'])

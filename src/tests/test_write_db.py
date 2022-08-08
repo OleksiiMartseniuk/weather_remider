@@ -15,10 +15,10 @@ class TestWriteDB(APITestCase):
         self.writer.create_city(conf_json.london_data)
         self.assertEqual(1, City.objects.count())
 
-        city = City.objects.get(name='London')
+        city = City.objects.get(name='london')
 
         self.assertEqual(city.id_city, conf_json.london_data['id'])
-        self.assertEqual(city.name, conf_json.london_data['name'])
+        self.assertEqual(city.name, conf_json.london_data['name'].lower())
         self.assertEqual(city.timezone, conf_json.london_data['timezone'])
         self.assertEqual(city.coord_lon, conf_json.london_data['coord']['lon'])
         self.assertEqual(city.coord_lat, conf_json.london_data['coord']['lat'])
@@ -57,10 +57,8 @@ class TestWriteDB(APITestCase):
         self.writer.create_city(conf_json.london_data)
         self.assertEqual(1, City.objects.count())
 
-        with self.assertRaises(ValidationError) as cm:
-            self.writer.create_city(conf_json.london_data)
-
-        self.assertTrue(conf_json.error_exists in str(cm.exception))
+        self.writer.create_city(conf_json.london_data)
+        self.assertEqual(1, City.objects.count())
 
     def test_create_city_fake(self):
         self.assertEqual(0, City.objects.count())

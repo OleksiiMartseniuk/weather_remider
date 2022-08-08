@@ -12,8 +12,13 @@ User = get_user_model()
 
 class TestAccount(APITestCase):
     def authenticate(self, username, password):
-        response = self.client.post('/api/token/', data={'username': username, 'password': password})
-        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + response.data['access'])
+        response = self.client.post(
+            '/api/token/',
+            data={'username': username, 'password': password}
+        )
+        self.client.credentials(
+            HTTP_AUTHORIZATION='Bearer ' + response.data['access']
+        )
 
     def test_create(self):
         self.assertEqual(0, User.objects.count())
