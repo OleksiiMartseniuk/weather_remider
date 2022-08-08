@@ -16,6 +16,15 @@ class CitySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class SubscriptionSerializer(serializers.ModelSerializer):
+    """Вывод подписок"""
+    city = serializers.SlugRelatedField(slug_field='name', read_only=True)
+
+    class Meta:
+        model = SubscriptionCity
+        exclude = ['periodic_task', 'owner']
+
+
 class CreateSubscriptionSerializer(serializers.ModelSerializer):
     """ Создания подписка """
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
@@ -35,15 +44,6 @@ class CreateSubscriptionSerializer(serializers.ModelSerializer):
         )
         instance.save()
         return instance
-
-
-class ListSubscriptionSerializer(serializers.ModelSerializer):
-    """Список подписок"""
-    city = serializers.SlugRelatedField(slug_field='name', read_only=True)
-
-    class Meta:
-        model = SubscriptionCity
-        exclude = ['periodic_task', 'owner']
 
 
 class UpdateSubscriptionSerializer(serializers.ModelSerializer):
