@@ -33,5 +33,6 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     # app weather
     path('api/weather/', include('src.weather.urls')),
+    # app account
     path('api/account/', include('src.account.urls'))
 ]
