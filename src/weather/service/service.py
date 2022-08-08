@@ -15,8 +15,9 @@ class WeatherService:
     def search_city(self, name: str) -> int:
         """Получения города"""
         if City.objects.filter(name=name.lower()).exists():
-            city = City.objects.get(name=name.lower())
-            return city.id
+            city_id = City.objects.filter(name=name.lower()).\
+                values_list('id', flat=True)
+            return city_id[0]
         return self.create(name)
 
 

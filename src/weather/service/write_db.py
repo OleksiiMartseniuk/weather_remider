@@ -13,8 +13,9 @@ class WriteDB:
         """ Запись Города"""
         self._check_error(data)
         if City.objects.filter(id_city=data.get('id')).exists():
-            city = City.objects.get(id_city=data.get('id'))
-            return city.id
+            city_id = City.objects.filter(id_city=data.get('id')).\
+                values_list('id', flat=True)
+            return city_id[0]
 
         try:
             city = City.objects.create(
