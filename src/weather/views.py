@@ -4,10 +4,10 @@ from rest_framework.response import Response
 from src.weather.service.service import weather_s
 from src.weather import models
 
+from .utils import SubscriptionMixin
 from .serializers import (
     CitySearchSerializer,
     CreateSubscriptionSerializer,
-    SubscriptionSerializer,
     UpdateSubscriptionSerializer,
     CitySerializer
 )
@@ -47,34 +47,20 @@ class SubscriptionCreateView(generics.CreateAPIView):
     serializer_class = CreateSubscriptionSerializer
 
 
-class SubscriptionRetrieveView(generics.RetrieveAPIView):
+class SubscriptionRetrieveView(SubscriptionMixin,
+                               generics.RetrieveAPIView):
     """
     Получения полной информации по подписке
     ---
     """
-    serializer_class = SubscriptionSerializer
-
-    def get_queryset(self):
-        # TODO проверить запрос silk
-        # TODO  к city добавить id
-        return models.SubscriptionCity.objects. \
-            filter(owner=self.request.user). \
-            only('id', 'periodicity_send_email', 'city')
 
 
-class SubscriptionListView(generics.ListAPIView):
+class SubscriptionListView(SubscriptionMixin,
+                           generics.ListAPIView):
     """
     Вывод списка подписок
     ---
     """
-    serializer_class = SubscriptionSerializer
-
-    def get_queryset(self):
-        # TODO проверить запрос silk
-        # TODO  к city добавить id
-        return models.SubscriptionCity.objects.\
-            filter(owner=self.request.user).\
-            only('id', 'periodicity_send_email', 'city')
 
 
 class SubscriptionUpdateView(generics.UpdateAPIView):
