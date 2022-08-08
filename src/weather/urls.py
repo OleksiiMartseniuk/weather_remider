@@ -2,17 +2,10 @@ from django.urls import path
 from src.weather import views
 
 urlpatterns = [
-    path('city/<str:name>/', views.CityView.as_view({'get': 'retrieve'})),
-    path('city/', views.CityView.as_view({'get': 'list', 'post': 'create'})),
-    path('subscription/<int:pk>/',
-         views.SubscriptionCityView.as_view({
-             'get': 'retrieve',
-             'put': 'update',
-             'delete': 'destroy'
-         })),
-    path('subscription/',
-         views.SubscriptionCityView.as_view({
-             'get': 'list',
-             'post': 'create'
-         })),
+    path('city-search/', views.SearchCityView.as_view()),
+    path('city/<int:pk>/', views.CityRetrieveView.as_view()),
+    path('subscription-create/', views.CreateSubscriptionView.as_view()),
+    path('subscription-list/', views.ListSubscriptionView.as_view()),
+    path('subscription-update/<int:pk>/', views.UpdateSubscriptionView.as_view()),
+    path('subscription-destroy/<int:pk>/', views.DestroySubscriptionView.as_view()),
 ]
