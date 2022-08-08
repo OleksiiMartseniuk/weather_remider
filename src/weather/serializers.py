@@ -3,11 +3,6 @@ from src.weather.models import City, SubscriptionCity
 from src.weather.service.periodic_tast_service import service_task
 
 
-# class CityCreateSerializer(serializers.Serializer):
-#     """ Названия города """
-#     name = serializers.CharField(max_length=20)
-
-
 class CitySearchSerializer(serializers.Serializer):
     """ Названия города """
     id = serializers.IntegerField(read_only=True)
