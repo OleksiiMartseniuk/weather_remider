@@ -7,7 +7,7 @@ from src.weather import models
 from .serializers import (
     CitySearchSerializer,
     CreateSubscriptionSerializer,
-    ListSubscriptionSerializer,
+    SubscriptionSerializer,
     UpdateSubscriptionSerializer,
     CitySerializer
 )
@@ -22,7 +22,7 @@ class CityRetrieveView(generics.RetrieveAPIView):
     serializer_class = CitySerializer
 
 
-class SearchCityView(generics.GenericAPIView):
+class CitySearchView(generics.GenericAPIView):
     """
     Поиск Города
     ---
@@ -39,7 +39,7 @@ class SearchCityView(generics.GenericAPIView):
         return Response(serializer.errors, status=400)
 
 
-class CreateSubscriptionView(generics.CreateAPIView):
+class SubscriptionCreateView(generics.CreateAPIView):
     """
     Создать подписку на город
     ---
@@ -47,12 +47,27 @@ class CreateSubscriptionView(generics.CreateAPIView):
     serializer_class = CreateSubscriptionSerializer
 
 
-class ListSubscriptionView(generics.ListAPIView):
+class SubscriptionRetrieveView(generics.RetrieveAPIView):
+    """
+    Получения полной информации по подписке
+    ---
+    """
+    serializer_class = SubscriptionSerializer
+
+    def get_queryset(self):
+        # TODO проверить запрос silk
+        # TODO  к city добавить id
+        return models.SubscriptionCity.objects. \
+            filter(owner=self.request.user). \
+            only('id', 'periodicity_send_email', 'city')
+
+
+class SubscriptionListView(generics.ListAPIView):
     """
     Вывод списка подписок
     ---
     """
-    serializer_class = ListSubscriptionSerializer
+    serializer_class = SubscriptionSerializer
 
     def get_queryset(self):
         # TODO проверить запрос silk
@@ -62,7 +77,7 @@ class ListSubscriptionView(generics.ListAPIView):
             only('id', 'periodicity_send_email', 'city')
 
 
-class UpdateSubscriptionView(generics.UpdateAPIView):
+class SubscriptionUpdateView(generics.UpdateAPIView):
     """
     Обновить подписку
     ---
@@ -73,7 +88,7 @@ class UpdateSubscriptionView(generics.UpdateAPIView):
         return models.SubscriptionCity.objects.filter(owner=self.request.user)
 
 
-class DestroySubscriptionView(generics.DestroyAPIView):
+class SubscriptionDestroyView(generics.DestroyAPIView):
     """
     Удаления подписки
     ---
