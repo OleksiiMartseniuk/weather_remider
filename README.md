@@ -62,7 +62,7 @@ export DJANGO_SETTINGS_MODULE=config.settings
 <br>
 
 #### Create superuser
-`docker exec weather_web python manage.py createsuperuser`
+`docker exec -it weather_web python manage.py createsuperuser`
 
 #### Run test
-`docker exec weather_web python manage.py test src/tests`
+`docker exec -it weather_web python manage.py test src/tests`
