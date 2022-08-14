@@ -6,15 +6,18 @@ services:
     container_name: weather_web
     command: bash entrypoint.sh
     volumes:
-      - ./static:/app/static
+      - .:/app
+      - static:/app/static
     ports:
       - "8000:8000"
     env_file: .env
     depends_on:
-      - database
+      - redis
 
   database:
     image: postgres:14
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
     container_name: weather_database
     ports:
       - "5432:5432"
@@ -26,7 +29,7 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - /path/to/redis-persistence:/bitnami/redis/data
+      - redis:/bitnami/redis/data
     depends_on:
       - database
 
@@ -36,7 +39,7 @@ services:
     command: celery -A config worker -l info
     env_file: .env
     depends_on:
-      - redis
+      - nginx
 
   beat:
     build: .
@@ -53,6 +56,11 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./static:/static
+      - static:/static
     depends_on:
       - web
+
+volumes:
+  postgres_data:
+  static:
+  redis:
