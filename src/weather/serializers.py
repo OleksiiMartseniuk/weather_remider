@@ -27,7 +27,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 
 class CreateSubscriptionSerializer(serializers.ModelSerializer):
     """ Создания подписка """
-    owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    owner = serializers.SlugRelatedField(slug_field='username', read_only=True)
 
     class Meta:
         model = SubscriptionCity
