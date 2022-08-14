@@ -5,10 +5,10 @@ from django_celery_beat.models import PeriodicTask, IntervalSchedule
 class ServiceTasks:
     def get_schedule(self, time: int) -> IntervalSchedule:
         """ Интервальное расписание """
-        return IntervalSchedule.objects.filter(
+        return IntervalSchedule.objects.get(
             every=time,
             period=IntervalSchedule.HOURS
-        )[0]
+        )
 
     def create(
             self,
