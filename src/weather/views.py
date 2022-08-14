@@ -46,6 +46,9 @@ class SubscriptionCreateView(generics.CreateAPIView):
     """
     serializer_class = CreateSubscriptionSerializer
 
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
 
 class SubscriptionRetrieveView(SubscriptionMixin,
                                generics.RetrieveAPIView):
